@@ -55,6 +55,14 @@ io.on("connection", (socket) => {
     );
     buscarSala(args.salaId)?.jugar(args.jugador, args.posicion);
   });
+  socket.on("nuevaRonda", (args) => {
+    console.log(
+      "Empezando una nueva ronda",
+      args,
+      buscarSala(args.salaId)
+    );
+    buscarSala(args.salaId)?.nuevaRonda();
+  });
 });
 
 // Busca una sala disponible, si la encuentra devuelve el id de la salas, si nodemon, devuelve null
