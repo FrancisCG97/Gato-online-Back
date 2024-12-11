@@ -17,6 +17,7 @@ export interface SalaBackend {
     id: number,
     estado: EstadoJuego,
     tablero: Tablero,
+    posicionGanadora: PosicionGanadora | undefined;
 }
 
 export type POSICION_TABLERO = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
@@ -24,3 +25,5 @@ export type POSICION_TABLERO = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 export type Tablero = [NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | "", NUMERO_JUGADOR | ""]
 
 export type NUMERO_JUGADOR = 1 | 2;
+
+export type PosicionGanadora = [POSICION_TABLERO, POSICION_TABLERO, POSICION_TABLERO]
