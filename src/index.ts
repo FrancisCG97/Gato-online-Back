@@ -14,17 +14,14 @@ server.listen(3000, () => {
 });
 
 function buscarSala(id: number) {
-  return salas.find(sala => sala.id === id);
+  return salas.find((sala) => sala.id === id);
 }
 
 let salas: Sala[] = [];
 let idProximaSala = 0;
 
 io.on("connection", (socket) => {
-  console.log("Nueva conexión");
-
   io.on("encontrarSala", (callback) => buscarSalaPublica(callback));
-  console.log("Nueva conexión");
 
   socket.on("encontrarSala", (callback) => buscarSalaPublica(callback));
   socket.on("crearSala", (callback, args) => crearSala(socket, args, callback));
@@ -40,34 +37,17 @@ io.on("connection", (socket) => {
     salaJugador?.jugadorAbandono();
     socket.conn.close();
     salas = salas.filter((sala) => sala.id !== salaJugador.id);
-    console.log(
-      "Acabo de cerrar la sala",
-      salaJugador.id,
-      ", ahora las salas son",
-      salas
-    );
   });
   socket.on("jugar", (args) => {
-    console.log(
-      "Viendo de registrar una jugada",
-      args,
-      buscarSala(args.salaId)
-    );
     buscarSala(args.salaId)?.jugar(args.jugador, args.posicion);
   });
   socket.on("nuevaRonda", (args) => {
-    console.log(
-      "Empezando una nueva ronda",
-      args,
-      buscarSala(args.salaId)
-    );
     buscarSala(args.salaId)?.nuevaRonda();
   });
 });
 
 // Busca una sala disponible, si la encuentra devuelve el id de la salas, si nodemon, devuelve null
 function buscarSalaPublica(callback: Function) {
-  console.log("Buscando sala publica");
   const salaDisponible = salas.find((sala) => {
     if (!sala.publica) return false;
     if (sala.jugadores[0].nombre && sala.jugadores[1].nombre) return false;
@@ -77,8 +57,7 @@ function buscarSalaPublica(callback: Function) {
 }
 
 function crearSala(socket: Socket, callback: Function, args: CrearSalaArgs) {
-  console.log("Debo crear un sala con estos datos ", args);
-  const nuevaSala = new Sala(args, socket);
+  const nuevaSala = new Sala(args);
   nuevaSala.id = idProximaSala;
   idProximaSala++;
   salas.push(nuevaSala);
@@ -94,7 +73,6 @@ function unirseASala(
   callback: Function,
   args: UnirseASalaArgs
 ) {
-  console.log("Uniendo a sala ", args);
   if (!salas.length)
     return callback({ exito: false, mensale: "No existen salas" });
 
@@ -118,4 +96,3 @@ function unirseASala(
     sala: salas[salaIndex].getSala(),
   });
 }
-

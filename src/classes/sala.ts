@@ -1,27 +1,25 @@
-import { Socket } from "socket.io";
 import { CrearSalaArgs } from "../interfaces/crearSala";
 import { Jugador, JUGADOR_VACIO } from "../interfaces/jugador";
 import {
   EstadoJuego,
-  POSICION_TABLERO,
+  PosicionTablero,
   PosicionGanadora,
   SalaBackend,
   Tablero,
+  NumeroJugador,
 } from "../interfaces/sala";
 
 export class Sala {
   publica: boolean;
   jugadores: [Jugador, Jugador] = [{ ...JUGADOR_VACIO }, { ...JUGADOR_VACIO }];
-  id: number;
-  socket: Socket;
+  id?: number;
   jugadorInicial: 0 | 1 = 0;
   tablero: Tablero = ["", "", "", "", "", "", "", "", ""];
   estado: EstadoJuego = "ESPERANDO_COMPAÑERO";
   posicionGanadora?: PosicionGanadora;
 
-  constructor(args: CrearSalaArgs, socket: Socket) {
+  constructor(args: CrearSalaArgs) {
     this.publica = args.publica;
-    this.socket = socket;
   }
 
   agregarJugador(nombre: string) {
@@ -38,7 +36,7 @@ export class Sala {
     return {
       publica: this.publica,
       jugadores: this.jugadores,
-      id: this.id,
+      id: this.id!,
       estado: this.estado,
       tablero: this.tablero,
       posicionGanadora: this.posicionGanadora,
@@ -56,7 +54,7 @@ export class Sala {
     this.comunicarSala();
   }
 
-  jugar(numeroJugador: 1 | 2, posicion: POSICION_TABLERO) {
+  jugar(numeroJugador: NumeroJugador, posicion: PosicionTablero) {
     if (
       (numeroJugador !== 1 && this.estado === "TURNO_P1") ||
       (numeroJugador !== 2 && this.estado === "TURNO_P2")
@@ -78,7 +76,7 @@ export class Sala {
       if (this.jugadores[indiceJugadorAfectado].vidas === 0) {
         this.estado =
           numeroJugador === 1 ? "VICTORIA_FINAL_P1" : "VICTORIA_FINAL_P2";
-          this.posicionGanadora = fin;
+        this.posicionGanadora = fin;
       } else {
         this.estado = numeroJugador === 1 ? "VICTORIA_P1" : "VICTORIA_P2";
         this.posicionGanadora = fin;
@@ -97,7 +95,11 @@ export class Sala {
         this.tablero[i] === this.tablero[i + 1] &&
         this.tablero[i] === this.tablero[i + 2]
       )
-        return [i as POSICION_TABLERO, i + 1 as POSICION_TABLERO, i + 2 as POSICION_TABLERO];
+        return [
+          i as PosicionTablero,
+          (i + 1) as PosicionTablero,
+          (i + 2) as PosicionTablero,
+        ];
     }
 
     // Verificar líneas verticales
@@ -107,7 +109,11 @@ export class Sala {
         this.tablero[i] === this.tablero[i + 3] &&
         this.tablero[i] === this.tablero[i + 6]
       )
-        return [i as POSICION_TABLERO, i + 3 as POSICION_TABLERO, i + 6 as POSICION_TABLERO];
+        return [
+          i as PosicionTablero,
+          (i + 3) as PosicionTablero,
+          (i + 6) as PosicionTablero,
+        ];
     }
 
     // Verificar líneas diagonales
@@ -153,5 +159,4 @@ export class Sala {
   cambiarJugadorInicial() {
     this.jugadorInicial = this.jugadorInicial === 0 ? 1 : 0;
   }
-
 }
