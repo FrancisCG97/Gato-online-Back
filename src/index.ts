@@ -3,14 +3,16 @@ import express from "express";
 import { createServer } from "node:http";
 import { Sala } from "./classes/sala";
 import { CrearSalaArgs, UnirseASalaArgs } from "./interfaces/crearSala";
+import { config } from "dotenv";
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 global.io = io;
+config();
 
-server.listen(3000, () => {
-  console.log("Server corriendo en puerto 3000");
+server.listen(process.env.PORT || 3000, () => {
+  console.log("Server corriendo en puerto", process.env.PORT);
 });
 
 function buscarSala(id: number) {
