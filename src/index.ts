@@ -11,22 +11,17 @@ const io = new Server(server, { cors: { origin: "*" } });
 global.io = io;
 config();
 
-server.listen(process.env.PORT || 3000, () => {
-  console.log("Server corriendo en puerto", process.env.PORT);
+const puerto = process.env.PORT || 3000;
+server.listen(puerto, () => {
+  console.log("Server escuchando en el puerto", puerto);
 });
-
-function buscarSala(id: number) {
-  return salas.find((sala) => sala.id === id);
-}
 
 let salas: Sala[] = [];
 let idProximaSala = 0;
 
 io.on("connection", (socket) => {
-  io.on("encontrarSala", (callback) => buscarSalaPublica(callback));
-
   socket.on("encontrarSala", (callback) => buscarSalaPublica(callback));
-  socket.on("crearSala", (callback, args) => crearSala(socket, args, callback));
+  socket.on("crearSala", (args, callback) => crearSala(socket, callback, args));
   socket.on("unirseASala", (args, callback) =>
     unirseASala(socket, callback, args)
   );
@@ -97,4 +92,8 @@ function unirseASala(
     mansaje: "Unido a la sala " + salas[salaIndex].id,
     sala: salas[salaIndex].getSala(),
   });
+}
+
+function buscarSala(id: number) {
+  return salas.find((sala) => sala.id === id);
 }
