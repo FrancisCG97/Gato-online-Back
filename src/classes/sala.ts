@@ -103,7 +103,7 @@ export class Sala {
     }
 
     // Verificar líneas verticales
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 9; i++) {
       if (
         this.tablero[i] !== "" &&
         this.tablero[i] === this.tablero[i + 3] &&
